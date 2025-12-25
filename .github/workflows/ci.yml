@@ -10,32 +10,33 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [ "20" ]
-
     steps:
-      - name: Checkout repo
+      # 1) 拉取代码
+      - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2) 安装 Node（不启用 npm cache，避免根目录没有 lockfile 的报错）
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: "npm"
+          node-version: "20"
 
+      # 3) 安装后端依赖
       - name: Install server dependencies
         working-directory: server
         run: npm ci
 
+      # 4) 跑后端测试（如果你没写 test 脚本也不会失败）
       - name: Run server tests (if present)
         working-directory: server
         run: npm test --if-present
 
+      # 5) 安装前端依赖
       - name: Install client dependencies
         working-directory: client
         run: npm ci
 
+      # 6) 构建前端（Vite build）
       - name: Build client
         working-directory: client
         run: npm run build
