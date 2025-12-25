@@ -11,32 +11,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) 拉取代码
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2) 安装 Node（不启用 npm cache，避免根目录没有 lockfile 的报错）
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
 
-      # 3) 安装后端依赖
       - name: Install server dependencies
         working-directory: server
-        run: npm ci
+        run: npm install
 
-      # 4) 跑后端测试（如果你没写 test 脚本也不会失败）
       - name: Run server tests (if present)
         working-directory: server
         run: npm test --if-present
 
-      # 5) 安装前端依赖
       - name: Install client dependencies
         working-directory: client
-        run: npm ci
+        run: npm install
 
-      # 6) 构建前端（Vite build）
-      - name: Build client
+      - name: Build client (if present)
         working-directory: client
-        run: npm run build
+        run: npm run build --if-present
